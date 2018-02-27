@@ -1,25 +1,39 @@
-module.exports = function getZerosCount(number, base) {
+module.exports = function getZerosCount(number, b) {
+    var n = number;
+    var base = b;
+    var count = {};
+    var res = [];
 
-    var n = number,
-            b = base;
-    var primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59,
-        61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127];
-    var count = 0,
-            t;
 
-    var largestPrimeDivisor = base;
-    for (var i = primes.length - 1; i >= 0; i--) {
-        if (b % primes[i] == 0) {
-            largestPrimeDivisor = primes[i];
-            break;
+    var divisors = [];
+    for (var i = 2; i <= b; i++)
+        while (!(b % i)) {
+            divisors.push(i);
+            b /= i;
         }
-    }
+    divisors.sort(function(a, b) {return a-b});
+    for (var i in divisors)
+        count[divisors[i]] = 0;
+    for (var i in divisors)
+        count[divisors[i]] ++;
+    for (var i in count)
+        res.push(Math.floor(getZ(number, i)/count[i]));
+    return res.reduce((a, b) => ((a > b) ? b:a));
+}
 
+function getZ(number, div) {
+    var n = number,
+        count = 0,
+        t;
     do {
-        t = Math.floor(n / largestPrimeDivisor);
+        t = Math.floor(n/div);
         count += t;
         n = t;
-    } while (n > 0);
+    }
+    while (n>1);
 
     return count;
 }
+
+
+//alert(getZerosCount(4821527, 250));
